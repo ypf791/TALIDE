@@ -115,6 +115,59 @@ public class Tape implements Cloneable {
 		MarginNode() { super(TapeConst.TC_X); }
 		// constructors end
 	}
+	
+	public class Iterator {
+		// fields
+		private TapeNode _focus;
+		private int _depth;
+		// fields end
+		
+		
+		// constructors
+		public Iterator(TapeNode node) {
+			_focus = node;
+			_depth = 0;
+			if (node==_mrgn_l) {
+				_depth -= _mrgn_l._length;
+			} else if (node==_mrgn_r) {
+				_depth += _mrgn_r._length;
+			}
+		}
+		// constructors end
+		
+		
+		// methods
+		public TapeConst val() { return _focus._value; }
+		
+		public void decrease() {
+			if (_depth==0) {
+				--_depth;
+				if (_depth!=0) {
+					_focus = _focus._prev;
+				}
+			} else {
+				_focus = _focus._prev;
+				if (_focus==_mrgn_l) {
+					--_depth;
+				}
+			}
+		}
+		
+		public void increase() {
+			if (_depth==0) {
+				++_depth;
+				if (_depth!=0) {
+					_focus = _focus._next;
+				}
+			} else {
+				_focus = _focus._next;
+				if (_focus==_mrgn_r) {
+					++_depth;
+				}
+			}
+		}
+		// methods end
+	}
 	// nested classes end
 
 
@@ -180,6 +233,8 @@ public class Tape implements Cloneable {
 	}
 	
 	public TapeConst read() { return _read._value; }
+	
+	public Iterator iterator() { return new Iterator(_read); }
 	
 	public void accept(ExecResult er) {
 		switch (er) {
