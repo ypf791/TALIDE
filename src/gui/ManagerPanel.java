@@ -20,7 +20,9 @@ import java.awt.event.*;
    public class   
 *****************/
 public class ManagerPanel extends JPanel {
+	// constructors
 	public ManagerPanel() {
 		setPreferredSize(new Dimension(300, 600));
 	}
+	// constructors end
 }

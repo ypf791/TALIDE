@@ -163,6 +163,11 @@ public class Movie {
 	// methods
 	public void start() {
 		if (_playing == true) return;
+		if (_first == null) {
+			if (_periodProvider == null) return;
+			addPeriod(_periodProvider.nextMovie());
+		}
+		if (_first == null) return;
 		_playing = true;
 		_now = _first;
 		_first.begin();
@@ -177,7 +182,7 @@ public class Movie {
 		}
 	}
 
-	public void shut() { if(_playing == true) _now.end(); }
+	public void shut() { if (_playing == true) _now.end(); }
 
 	public void pause() { _now.stop(); }
 

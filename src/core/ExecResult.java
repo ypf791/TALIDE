@@ -16,7 +16,9 @@ package talide.core;
 ***********/
 
 
-/****************
-   public enum   
-****************/
-public enum ExecResult { NIL, SH_L, SH_R, OVRD_0, OVRD_1, OVRD_X }
+/***********************
+   public enumeration   
+***********************/
+public enum ExecResult {
+	NIL, SH_L, SH_R, OVRD_0, OVRD_1, OVRD_X;
+}

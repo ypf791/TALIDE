@@ -23,11 +23,14 @@ import java.awt.event.*;
    public class   
 *****************/
 public class FuncOpen extends Func {
-	public FuncOpen() {
-		super("Open");
-	}
+	// constructors
+	public FuncOpen() { super("Open"); }
+	// constructors end
 	
+	
+	// methods
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("open function executing...");
 	}
+	// methods end
 }

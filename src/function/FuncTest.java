@@ -25,14 +25,14 @@ import talide.core.*;
    public class   
 *****************/
 public class FuncTest extends Func {
-	public FuncTest() {
-		super("Test");
-	}
+	// constructors
+	public FuncTest() { super("Test"); }
+	// constructors end
 	
+	
+	// methods
 	public void actionPerformed(ActionEvent e) {
-		_talideInstance.showExecFrame(
-			new Tape("TEST"),
-			new Circuit("TEST")
-		);
+		_talideInstance.showExecFrame(new Tape("TEST"), new Circuit("TEST"));
 	}
+	// methods end
 }

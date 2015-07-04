@@ -23,8 +23,10 @@ import java.awt.event.*;
    public class   
 *****************/
 public class ProjectPane extends JPanel {
+	// constructors
 	public ProjectPane() {
 		setPreferredSize(new Dimension(250, 600));
 		setMinimumSize(new Dimension(100, 600));
 	}
+	// constructors end
 }

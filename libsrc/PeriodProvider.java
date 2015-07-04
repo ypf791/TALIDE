@@ -19,7 +19,7 @@ package pedeslib.movie;
 /**************
    interface   
 **************/
-interface PeriodProvider {
+public interface PeriodProvider {
 	// methods
 	public MoviePeriod nextMovie();
 	// methods end

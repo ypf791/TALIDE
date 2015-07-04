@@ -27,10 +27,6 @@ public final class EmptySlot extends Slot {
 	// constructors end
 
 
-	// static methods
-	// static methods end
-
-
 	// methods
 	public String toCode() { return "emp"; }
 	

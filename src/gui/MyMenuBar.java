@@ -18,13 +18,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import talide.function.*;
-
 
 /*****************
    public class   
 *****************/
 public class MyMenuBar extends JMenuBar {
+	// constructors
 	public MyMenuBar() {
 		//file
 		JMenu jmFile = new JMenu("File");
@@ -52,4 +51,5 @@ public class MyMenuBar extends JMenuBar {
 		add(jmEdit);
 		add(jmAbout);
 	}
+	// constructors end
 }
