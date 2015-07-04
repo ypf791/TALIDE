@@ -47,14 +47,14 @@ public class Circuit implements Cloneable {
 				Slot.parseSlot("if:x:+"),
 				Slot.parseSlot("ovrd:0"),
 				Slot.parseSlot("sh:-"),
-				Slot.parseSlot("j:4")
+				Slot.parseSlot("j:-4")
 			},
 			new Slot[] {
 				Slot.parseSlot("emp"),
 				Slot.parseSlot("ovrd:1"),
 				Slot.parseSlot("sh:+"),
 				Slot.parseSlot("if:x:-"),
-				Slot.parseSlot("j:2")
+				Slot.parseSlot("j:-2")
 			}
 		};
 	}

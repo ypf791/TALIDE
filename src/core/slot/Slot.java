@@ -23,7 +23,7 @@ import java.util.TreeMap;
 @FunctionalInterface
 interface SlotFactory {
 	// methods
-	Slot createSlot(String str);
+	Slot createSlot(String str) throws FailToCreateSlotException;
 	// methods end
 }
 
@@ -36,6 +36,19 @@ public abstract class Slot {
 	protected static NextToExec _defaultNTE;
 	private static TreeMap<String, SlotFactory> _factoryMap;
 	// static fields end
+	
+	
+	// nested enumerations
+	protected enum Direction {
+		DIR_POS(1), DIR_NEG(-1);
+		
+		private int _value;
+		
+		private Direction(int v) { _value = v; }
+		
+		public int toInt() { return _value; }
+	}
+	// nested enumerations end
 
 
 	// static methods
@@ -46,9 +59,16 @@ public abstract class Slot {
 		
 		if (tokens.length==2) option = tokens[1];
 		SlotFactory factory = _factoryMap.get(type);
-		if (factory!=null) {
+		try {
 			return factory.createSlot(option);
-		} else {
+		} catch (FailToCreateSlotException ex) {
+			ex.printMyMessage();
+			System.err.println("[ RTN ] EmptySlot instead");
+			return new EmptySlot();
+		} catch (NullPointerException ex) {
+			System.err.println("[ ERR ] " + ex.getStackTrace()[0].toString());
+			System.err.println("[ MSG ] No factory matches the given string: " + str);
+			System.err.println("[ RTN ] EmptySlot instead");
 			return new EmptySlot();
 		}
 	}
@@ -73,6 +93,10 @@ public abstract class Slot {
 		
 		// register factories
 		regFactory("emp", EmptySlot::new);
+		regFactory("sh", ShiftSlot::new);
+		regFactory("if", IfSlot::new);
+		regFactory("ovrd", OverrideSlot::new);
+		regFactory("j", JumpSlot::new);
 	}
 	// static block end
 }
