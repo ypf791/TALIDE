@@ -19,23 +19,31 @@ import java.awt.*;
 import java.awt.event.*;
 
 import talide.core.*;
+import pedeslib.movie.*;
 
 
 /*****************
    public class   
 *****************/
-public class ExecFrame extends JFrame {
+public class ExecFrame extends JFrame
+                    implements PeriodProvider {
+	// fields
 	private Tape    _tape;
 	private Circuit _circuit;
 	private TapePanel    _tapePanel;
 	private CircuitPanel _circuitPanel;
+	private Movie _tapeMovie;
+	// fields end
 	
+	
+	// constructors
 	public ExecFrame(Tape tape, Circuit circuit) {
 		//Instantiate compenents
 		_tape    = tape.clone();
 		_circuit = circuit.clone();
 		_tapePanel    = new TapePanel(_tape);
 		_circuitPanel = new CircuitPanel(_circuit);
+		_tapeMovie = new Movie(_tapePanel, this);
 		
 		//Adjust non-customized components
 		
@@ -65,4 +73,12 @@ public class ExecFrame extends JFrame {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
+	// constructors end
+	
+	
+	// methods
+	public MoviePeriod nextMovie() {
+		return _tapePanel.getPeriod(_circuit.execOneSlot(_tape.read()));
+	}
+	// methods end
 }

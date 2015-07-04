@@ -68,16 +68,7 @@ public class Tape implements Cloneable {
 			if (t._read==it) _read = node;
 		}
 		
-		if (_read==null) {
-			if (t._read==t._mrgn_l) {
-				_read = _mrgn_l;
-			} else if (t._read==t._mrgn_r) {
-				_read = _mrgn_r;
-			} else {
-				System.err.println("[ Err ] Tape::Tape(Tape)");
-				System.err.println("[ Msg ] Variable(s) confilcted.");
-			}
-		}
+		if (t._read==t._mrgn_r) _read = _mrgn_r;
 	}
 	// constructors end
 
@@ -140,30 +131,18 @@ public class Tape implements Cloneable {
 		public TapeConst val() { return _focus._value; }
 		
 		public void decrease() {
+			if (_depth!=0) --_depth;
 			if (_depth==0) {
-				--_depth;
-				if (_depth!=0) {
-					_focus = _focus._prev;
-				}
-			} else {
 				_focus = _focus._prev;
-				if (_focus==_mrgn_l) {
-					--_depth;
-				}
+				if (_focus==_mrgn_l) _depth = -1;
 			}
 		}
 		
 		public void increase() {
+			if (_depth!=0) ++_depth;
 			if (_depth==0) {
-				++_depth;
-				if (_depth!=0) {
-					_focus = _focus._next;
-				}
-			} else {
 				_focus = _focus._next;
-				if (_focus==_mrgn_r) {
-					++_depth;
-				}
+				if (_focus==_mrgn_r) _depth = 1;
 			}
 		}
 		// methods end
