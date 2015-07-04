@@ -47,12 +47,12 @@ public class ShiftSlot extends Slot {
 	}
 	
 	public NextToExec exec(TapeConst tc) {
-		NextToExec rtn = new NextToExec(0, 1, ExecResult.NIL);
+		ExecResult er = ExecResult.NIL;
 		switch (_direction) {
-			case DIR_POS: rtn._result = ExecResult.SH_R; break;
-			case DIR_NEG: rtn._result = ExecResult.SH_L; break;
+			case DIR_POS: er = ExecResult.SH_R; break;
+			case DIR_NEG: er = ExecResult.SH_L; break;
 		}
-		return rtn;
+		return new NextToExec(0, 1, er);
 	}
 	// methods end
 }

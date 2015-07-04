@@ -49,13 +49,13 @@ public class OverrideSlot extends Slot {
 	}
 	
 	public NextToExec exec(TapeConst tc) {
-		NextToExec rtn = new NextToExec(0, 1, ExecResult.NIL);
+		ExecResult er = ExecResult.NIL;
 		switch (_toOverride) {
-			case TC_0: rtn._result = ExecResult.OVRD_0; break;
-			case TC_1: rtn._result = ExecResult.OVRD_1; break;
-			case TC_X: rtn._result = ExecResult.OVRD_X; break;
+			case TC_0: er = ExecResult.OVRD_0; break;
+			case TC_1: er = ExecResult.OVRD_1; break;
+			case TC_X: er = ExecResult.OVRD_X; break;
 		}
-		return rtn;
+		return new NextToExec(0, 1, er);
 	}
 	// methods end
 }

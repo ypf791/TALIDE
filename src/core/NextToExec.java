@@ -22,9 +22,9 @@ import java.util.TreeMap;
 *****************/
 class NextToExec {
 	// fields
-	public int _diff_row;
-	public int _diff_col;
-	public ExecResult _result;
+	public final int _diff_row;
+	public final int _diff_col;
+	public final ExecResult _result;
 	// fields end
 
 

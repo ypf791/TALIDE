@@ -53,17 +53,6 @@ public class TapePanel extends JPanel {
 		_strips = null;
 		_img = Talide._img_tape;
 		
-		MediaTracker mt = new MediaTracker(this);
-		int __length = _img.length;
-		for (int i=0; i<__length; ++i) {
-			mt.addImage(_img[i], i);
-			try {
-				mt.waitForID(i);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		
 		TP_END_WIDTH    = _img[3].getWidth(null);
 		TP_END_HEIGHT   = _img[3].getHeight(null);
 		TP_FRAME_WIDTH  = _img[5].getWidth(null);
@@ -144,10 +133,9 @@ public class TapePanel extends JPanel {
 	public void update(Graphics g) { paintComponent(g); }
 	
 	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
 		/*
 		  Tape should be painted in the order of
-		    TAPE, STRIPS, ENDS, SHADOW and FRAME
+		    TAPE*, STRIPS, ENDS, SHADOW* and FRAME
 		  We create a BufferedImage for double-buffering.
 		  For painting TAPE, we
 		    1. decide horizontal range limitation (__l_lim, __r_lim)
@@ -155,8 +143,10 @@ public class TapePanel extends JPanel {
 		    3. paint left-hand side
 		    4. paint right-hand side
 		    P.S.
-		      For each hand side, we initialize __x, get iterator for _tape, 
-		      paint full units, and paint the incomplete unit in final.
+		      (1) For each hand side, we initialize __x, get iterator for _tape, 
+		          paint full units, and paint the incomplete unit in final.
+		      (2) For parts marked out with '*', we cannot help but using values
+		          depending on the details of images used.
 		*/
 		
 		// create buffers
@@ -222,8 +212,6 @@ public class TapePanel extends JPanel {
 		gBuf.drawImage(_img[4], getWidth() - TP_END_WIDTH, __end_align_y, null);
 		
 		// paint SHADOW
-		// in this part, we cannot help but using values depending on the details
-		//   of images used
 		int __inset_l = TP_END_WIDTH - 4;
 		int __inset_r = getWidth() - __inset_l - TP_UNIT_WIDTH;
 		gBuf.drawImage(_img[6], __inset_l, __y, null);
