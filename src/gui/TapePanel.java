@@ -17,7 +17,6 @@ package talide;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.*;
 import java.util.Random;
 
 import talide.core.*;
@@ -66,6 +65,7 @@ public class TapePanel extends JPanel {
 			TP_HEIGHT
 		);
 		
+		setOpaque(false);
 		setPreferredSize(_preferredSize);
 		setMinimumSize(_preferredSize);
 	}
@@ -149,14 +149,6 @@ public class TapePanel extends JPanel {
 		          depending on the details of images used.
 		*/
 		
-		// create buffers
-		BufferedImage drawBuf = new BufferedImage(
-			getWidth(),
-			getHeight(),
-			BufferedImage.TYPE_INT_ARGB
-		);
-		Graphics gBuf = drawBuf.getGraphics();
-		
 		// paint TAPE
 		int __l_lim = 6;
 		int __r_lim = getWidth() - 6;
@@ -165,10 +157,10 @@ public class TapePanel extends JPanel {
 		// paint the left-hand side
 		Tape.Iterator it = _tape.iterator();
 		for (; __x>=__l_lim; __x-=TP_UNIT_WIDTH) {
-			gBuf.drawImage(_img[it.val().toInt()], __x, __y, null);
+			g.drawImage(_img[it.val().toInt()], __x, __y, null);
 			it.decrease();
 		}
-		gBuf.drawImage(_img[it.val().toInt()],
+		g.drawImage(_img[it.val().toInt()],
 			__l_lim,       __y, TP_UNIT_WIDTH + __x, TP_UNIT_HEIGHT + __y,
 			__l_lim - __x,   0, TP_UNIT_WIDTH,       TP_UNIT_HEIGHT,
 			null
@@ -179,10 +171,10 @@ public class TapePanel extends JPanel {
 		it.increase();
 		__x += TP_UNIT_WIDTH;
 		for (; __x+TP_UNIT_WIDTH<=__r_lim; __x+=TP_UNIT_WIDTH) {
-			gBuf.drawImage(_img[it.val().toInt()], __x, __y, null);
+			g.drawImage(_img[it.val().toInt()], __x, __y, null);
 			it.increase();
 		}
-		gBuf.drawImage(_img[it.val().toInt()],
+		g.drawImage(_img[it.val().toInt()],
 			__x, __y, __r_lim,       TP_UNIT_HEIGHT + __y,
 			  0,   0, __r_lim - __x, TP_UNIT_HEIGHT,
 			null
@@ -198,7 +190,7 @@ public class TapePanel extends JPanel {
 			for (int i=1; i<=n; ++i) {
 				x_s[i] = TP_UNIT_WIDTH * i / n;
 				if (!_strips[i-1]) continue;
-				gBuf.drawImage(toPaint,
+				g.drawImage(toPaint,
 					__x + x_s[i-1], __y, __x + x_s[i], __y + TP_UNIT_HEIGHT,
 					      x_s[i-1],   0,       x_s[i],       TP_UNIT_HEIGHT,
 					null
@@ -208,30 +200,25 @@ public class TapePanel extends JPanel {
 		
 		// paint ENDS
 		int __end_align_y = (TP_HEIGHT - TP_END_HEIGHT) / 2;
-		gBuf.drawImage(_img[3],                         0, __end_align_y, null);
-		gBuf.drawImage(_img[4], getWidth() - TP_END_WIDTH, __end_align_y, null);
+		g.drawImage(_img[3],                         0, __end_align_y, null);
+		g.drawImage(_img[4], getWidth() - TP_END_WIDTH, __end_align_y, null);
 		
 		// paint SHADOW
 		int __inset_l = TP_END_WIDTH - 4;
 		int __inset_r = getWidth() - __inset_l - TP_UNIT_WIDTH;
-		gBuf.drawImage(_img[6], __inset_l, __y, null);
-		gBuf.drawImage(_img[7], __inset_r, __y, null);
-		gBuf.drawImage(_img[8],
+		g.drawImage(_img[6], __inset_l, __y, null);
+		g.drawImage(_img[7], __inset_r, __y, null);
+		g.drawImage(_img[8],
 			TP_END_WIDTH, (TP_HEIGHT + TP_UNIT_HEIGHT) / 2,
 			getWidth() - 2 * TP_END_WIDTH, _img[8].getHeight(null),
 			null
 		);
 		
 		// paint FRAME
-		gBuf.drawImage(_img[5],
+		g.drawImage(_img[5],
 			(getWidth() - TP_FRAME_WIDTH) / 2, (TP_HEIGHT - TP_FRAME_HEIGHT) / 2,
 			null
 		);
-		
-		// flush buffer
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(Color.WHITE);
-		g2d.drawImage(drawBuf, 0, 0, this);
 	}
 	
 	public MoviePeriod getPeriod(ExecResult er) {

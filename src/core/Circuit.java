@@ -43,15 +43,15 @@ public class Circuit implements Cloneable {
 		_col_N = 5;
 		_slot = new Slot[][] {
 			new Slot[] {
-				Slot.parseSlot("if:0:+"),
+				Slot.parseSlot("if:1:+"),
 				Slot.parseSlot("if:x:+"),
-				Slot.parseSlot("ovrd:0"),
+				Slot.parseSlot("ovrd:1"),
 				Slot.parseSlot("sh:-"),
 				Slot.parseSlot("j:-4")
 			},
 			new Slot[] {
 				Slot.parseSlot("emp"),
-				Slot.parseSlot("ovrd:1"),
+				Slot.parseSlot("ovrd:0"),
 				Slot.parseSlot("sh:+"),
 				Slot.parseSlot("if:x:-"),
 				Slot.parseSlot("j:-2")

@@ -52,6 +52,7 @@ public class IfSlot extends Slot {
 			case TC_1: rtn.append('1'); break;
 			case TC_X: rtn.append('x'); break;
 		}
+		rtn.append(':');
 		switch (_direction) {
 			case DIR_POS: rtn.append('+'); break;
 			case DIR_NEG: rtn.append('-'); break;
