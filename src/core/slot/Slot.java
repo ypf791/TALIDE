@@ -23,7 +23,7 @@ import java.util.TreeMap;
 @FunctionalInterface
 interface SlotFactory {
 	// methods
-	Slot createSlot(String str) throws FailToCreateSlotException;
+	Slot createSlot(String str) throws CreateSlotException;
 	// methods end
 }
 
@@ -52,23 +52,29 @@ public abstract class Slot {
 
 
 	// static methods
+	private static void showErrMsg(Exception ex, String msg) {
+		System.err.println("[ ERR ] " + ex.getStackTrace()[0].toString());
+		System.err.println("[ MSG ] " + msg);
+		System.err.println("[ RTN ] EmptySlot instead");
+	}
 	public static Slot parseSlot(String str) {
 		String[] tokens = str.split(":", 2); // [type, option]
 		String type = tokens[0];
 		String option = "";
+		String errMsg = "";
 		
 		if (tokens.length==2) option = tokens[1];
 		SlotFactory factory = _factoryMap.get(type);
 		try {
 			return factory.createSlot(option);
-		} catch (FailToCreateSlotException ex) {
-			ex.printMyMessage();
-			System.err.println("[ RTN ] EmptySlot instead");
+		} catch (CreateSlotException ex) {
+			showErrMsg(ex, "Unrecognized argument $" + ex._idx + ": " + ex._arg);
 			return new EmptySlot();
 		} catch (NullPointerException ex) {
-			System.err.println("[ ERR ] " + ex.getStackTrace()[0].toString());
-			System.err.println("[ MSG ] No factory matches the given string: " + str);
-			System.err.println("[ RTN ] EmptySlot instead");
+			showErrMsg(ex, "No factory matches the given string: " + str);
+			return new EmptySlot();
+		} catch (Exception ex) {
+			showErrMsg(ex, "Unpredictable exception");
 			return new EmptySlot();
 		}
 	}

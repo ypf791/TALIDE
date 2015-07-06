@@ -135,8 +135,6 @@ public class Circuit implements Cloneable {
 	
 	public int getStartRow() { return _start_row; }
 	
-	public Iterator iterator() {
-		return new Iterator();
-	}
+	public Iterator iterator() { return new Iterator(); }
 	// methods end
 }

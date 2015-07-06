@@ -26,12 +26,12 @@ public class OverrideSlot extends Slot {
 	
 	
 	// constructors
-	public OverrideSlot(String str) throws FailToCreateSlotException {
+	public OverrideSlot(String str) throws CreateSlotException {
 		switch (str) {
 			case "0": _toOverride = TapeConst.TC_0; break;
 			case "1": _toOverride = TapeConst.TC_1; break;
 			case "x": _toOverride = TapeConst.TC_X; break;
-			default: throw new FailToCreateSlotException(1, str);
+			default: throw new CreateSlotException(1, str);
 		}
 	}
 	// constructors end

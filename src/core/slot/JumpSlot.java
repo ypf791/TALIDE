@@ -26,11 +26,11 @@ public class JumpSlot extends Slot {
 	
 	
 	// constructors
-	public JumpSlot(String str) throws FailToCreateSlotException {
+	public JumpSlot(String str) throws CreateSlotException {
 		try {
 			_distance = Integer.parseInt(str);
 		} catch (NumberFormatException ex) {
-			throw new FailToCreateSlotException(1, str);
+			throw new CreateSlotException(1, str);
 		}
 	}
 	// constructors end

@@ -26,11 +26,11 @@ public class ShiftSlot extends Slot {
 	
 	
 	// constructors
-	public ShiftSlot(String str) throws FailToCreateSlotException {
+	public ShiftSlot(String str) throws CreateSlotException {
 		switch (str) {
 			case "-": _direction = Direction.DIR_NEG; break;
 			case "+": _direction = Direction.DIR_POS; break;
-			default: throw new FailToCreateSlotException(1, str);
+			default: throw new CreateSlotException(1, str);
 		}
 	}
 	// constructors end
