@@ -31,18 +31,21 @@ class Movie:
 
         comp         : [ target updated ]
         timePerFrame : [ specifying the time between frames ]
-                       [ default: 3 ]
+                       [ default: 10 ]
         provider     : [ object that appends movie periods to this movie ]
                        [ default: null ]
-
-  * void start()
-        Start playing the movie
 
   * void addPeriod(MoviePeriod mp)
         Append mp to the movie
 
+  * void start()
+        Start playing the movie
+
   * void shut()
         Terminate the current movie period
+
+  * void terminate(boolean doEnding)
+        Terminate the whole movie
 
   * void pause()
         Pause the movie. Able to continue by calling proceed().
@@ -77,7 +80,6 @@ public class Movie {
 	// fields
 	private int         _dt;
 	private boolean     _playing;
-	private SeriesTimer _first;
 	private SeriesTimer _now;
 	private SeriesTimer _last;
 	private Component   _comp;
@@ -89,8 +91,12 @@ public class Movie {
 	// nested classes
 	private class SeriesTimer extends Timer {
 		SeriesTimer _next;
-
-		public SeriesTimer(ActionListener al) { super(_dt, al); }
+		MoviePeriod _period;
+		
+		public SeriesTimer(MoviePeriod mp) {
+			super(_dt, new Period(mp));
+			_period = mp;
+		}
 
 		public final void begin() { super.start(); }
 		public final void end() {
@@ -104,7 +110,7 @@ public class Movie {
 			}
 		}
 	}
-
+	
 	private class Period implements ActionListener {
 		MoviePeriod _period;
 
@@ -136,11 +142,11 @@ public class Movie {
 
 	// constructors
 	public Movie(Component comp) {
-		this(comp, 25, null);
+		this(comp, 10, null);
 	}
 
 	public Movie(Component comp, PeriodProvider provider) {
-		this(comp, 25, provider);
+		this(comp, 10, provider);
 	}
 
 	public Movie(Component comp, int timePerFrame) {
@@ -161,28 +167,37 @@ public class Movie {
 
 
 	// methods
+	public void addPeriod(MoviePeriod mp) {
+		if (mp == null) return;
+		if (_now == null) {
+			_now = _last = new SeriesTimer(mp);
+		} else {
+			_last = _last._next = new SeriesTimer(mp);
+		}
+	}
+
 	public void start() {
 		if (_playing == true) return;
-		if (_first == null) {
+		if (_now == null) {
 			if (_periodProvider == null) return;
 			addPeriod(_periodProvider.nextMovie());
 		}
-		if (_first == null) return;
+		if (_now == null) return;
 		_playing = true;
-		_now = _first;
-		_first.begin();
-	}
-
-	public void addPeriod(MoviePeriod mp) {
-		if (mp == null) return;
-		if (_first == null) {
-			_first = _last = new SeriesTimer(new Period(mp));
-		} else {
-			_last = _last._next = new SeriesTimer(new Period(mp));
-		}
+		_now.begin();
 	}
 
 	public void shut() { if (_playing == true) _now.end(); }
+
+	public void terminate(boolean doEnding) {
+		if (_playing == false) return;
+		_now.stop();
+		if (doEnding) _now._period.ending();
+		_comp.revalidate();
+		_comp.repaint();
+		_playing = false;
+		_now = null;
+	}
 
 	public void pause() { _now.stop(); }
 

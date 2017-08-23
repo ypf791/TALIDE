@@ -18,6 +18,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import talide.function.*;
+
 
 /*****************
    public class   
@@ -27,7 +29,8 @@ public class MyToolBar extends JToolBar {
 	public MyToolBar() {
 		add(new JButton(Talide._func_new));
 		add(new JButton(Talide._func_open));
-		add(new JButton(Talide._func_test));
+		add(new JButton(new FuncTest()));
+		add(new JButton(new FuncTest2()));
 	}
 	// constructors end
 }

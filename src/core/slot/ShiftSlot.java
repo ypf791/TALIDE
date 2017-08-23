@@ -22,37 +22,36 @@ package talide.core;
 public class ShiftSlot extends Slot {
 	// fields
 	protected Direction _direction;
+	protected int _imgIdx;
 	// fields end
 	
 	
 	// constructors
 	public ShiftSlot(String str) throws CreateSlotException {
+		_code = "sh:" + str;
+		ExecResult er = ExecResult.NIL;
 		switch (str) {
-			case "-": _direction = Direction.DIR_NEG; break;
-			case "+": _direction = Direction.DIR_POS; break;
-			default: throw new CreateSlotException(1, str);
+			case "-":
+				_direction = Direction.DIR_NEG;
+				er = ExecResult.SH_L;
+				_imgIdx = 26;
+				break;
+			case "+":
+				_direction = Direction.DIR_POS;
+				er = ExecResult.SH_R;
+				_imgIdx = 28;
+				break;
+			default:
+				throw new CreateSlotException(1, str);
 		}
+		_NTEList.add(new NextToExec(0, 1, er));
 	}
 	// constructors end
 
 
 	// methods
-	public String toCode() {
-		StringBuffer rtn = new StringBuffer("sh:");
-		switch (_direction) {
-			case DIR_POS: rtn.append('+'); break;
-			case DIR_NEG: rtn.append('-'); break;
-		}
-		return new String(rtn);
-	}
-	
-	public NextToExec exec(TapeConst tc) {
-		ExecResult er = ExecResult.NIL;
-		switch (_direction) {
-			case DIR_POS: er = ExecResult.SH_R; break;
-			case DIR_NEG: er = ExecResult.SH_L; break;
-		}
-		return new NextToExec(0, 1, er);
+	public java.awt.Image getImage(boolean isExec) {
+		return _img_slot[_imgIdx + (isExec ? 1 : 0)];
 	}
 	// methods end
 }
