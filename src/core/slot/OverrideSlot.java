@@ -22,40 +22,40 @@ package talide.core;
 public class OverrideSlot extends Slot {
 	// fields
 	protected TapeConst _toOverride;
+	protected int _imgIdx;
 	// fields end
 	
 	
 	// constructors
 	public OverrideSlot(String str) throws CreateSlotException {
+		_code = "ovrd:" + str;
+		ExecResult er = ExecResult.NIL;
 		switch (str) {
-			case "0": _toOverride = TapeConst.TC_0; break;
-			case "1": _toOverride = TapeConst.TC_1; break;
-			case "x": _toOverride = TapeConst.TC_X; break;
+			case "0":
+				_toOverride = TapeConst.TC_0;
+				er = ExecResult.OVRD_0;
+				_imgIdx = 20;
+				break;
+			case "1":
+				_toOverride = TapeConst.TC_1;
+				er = ExecResult.OVRD_1;
+				_imgIdx = 22;
+				break;
+			case "x":
+				_toOverride = TapeConst.TC_X;
+				er = ExecResult.OVRD_X;
+				_imgIdx = 24;
+				break;
 			default: throw new CreateSlotException(1, str);
 		}
+		_NTEList.add(new NextToExec(0, 1, er));
 	}
 	// constructors end
 
 
 	// methods
-	public String toCode() {
-		StringBuffer rtn = new StringBuffer("ovrd:");
-		switch (_toOverride) {
-			case TC_0: rtn.append('0'); break;
-			case TC_1: rtn.append('1'); break;
-			case TC_X: rtn.append('x'); break;
-		}
-		return new String(rtn);
-	}
-	
-	public NextToExec exec(TapeConst tc) {
-		ExecResult er = ExecResult.NIL;
-		switch (_toOverride) {
-			case TC_0: er = ExecResult.OVRD_0; break;
-			case TC_1: er = ExecResult.OVRD_1; break;
-			case TC_X: er = ExecResult.OVRD_X; break;
-		}
-		return new NextToExec(0, 1, er);
+	public java.awt.Image getImage(boolean isExec) {
+		return _img_slot[_imgIdx + (isExec ? 1 : 0)];
 	}
 	// methods end
 }

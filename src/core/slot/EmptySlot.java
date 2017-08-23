@@ -23,13 +23,15 @@ public final class EmptySlot extends Slot {
 	// constructors
 	public EmptySlot() {}
 	
-	public EmptySlot(String str) {}
+	public EmptySlot(String str) { _code = "emp"; }
 	// constructors end
 
 
 	// methods
-	public String toCode() { return "emp"; }
-	
 	public NextToExec exec(TapeConst tc) { return _defaultNTE; }
+	
+	public java.awt.Image getImage(boolean isExec) {
+		return _img_slot[isExec ? 1 : 0];
+	}
 	// methods end
 }

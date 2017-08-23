@@ -23,46 +23,38 @@ public class IfSlot extends Slot {
 	// fields
 	protected TapeConst _condition;
 	protected Direction _direction;
+	protected int _imgIdx;
 	// fields end
 	
 	
 	// constructors
 	public IfSlot(String str) throws CreateSlotException {
+		_code = "if:" + str;
 		String[] args = str.split(":", 2);
 		switch (args[0]) {
-			case "0": _condition = TapeConst.TC_0; break;
-			case "1": _condition = TapeConst.TC_1; break;
-			case "x": _condition = TapeConst.TC_X; break;
+			case "0": _condition = TapeConst.TC_0; _imgIdx = 5; break;
+			case "1": _condition = TapeConst.TC_1; _imgIdx = 7; break;
+			case "x": _condition = TapeConst.TC_X; _imgIdx = 9; break;
 			default: throw new CreateSlotException(1, args[0]);
 		}
 		switch (args[1]) {
-			case "-": _direction = Direction.DIR_NEG; break;
-			case "+": _direction = Direction.DIR_POS; break;
+			case "-": _direction = Direction.DIR_NEG; _imgIdx -= 3; break;
+			case "+": _direction = Direction.DIR_POS; _imgIdx += 3; break;
 			default: throw new CreateSlotException(2, args[1]);
 		}
+		_NTEList.add(new NextToExec(_direction.toInt(), 0, ExecResult.NIL));
 	}
 	// constructors end
 
 
 	// methods
-	public String toCode() {
-		StringBuffer rtn = new StringBuffer("if:");
-		switch (_condition) {
-			case TC_0: rtn.append('0'); break;
-			case TC_1: rtn.append('1'); break;
-			case TC_X: rtn.append('x'); break;
-		}
-		rtn.append(':');
-		switch (_direction) {
-			case DIR_POS: rtn.append('+'); break;
-			case DIR_NEG: rtn.append('-'); break;
-		}
-		return new String(rtn);
-	}
-	
 	public NextToExec exec(TapeConst tc) {
 		if (tc!=_condition) return _defaultNTE;
-		return new NextToExec(_direction.toInt(), 0, ExecResult.NIL);
+		return _NTEList.firstElement();
+	}
+	
+	public java.awt.Image getImage(boolean isExec) {
+		return _img_slot[_imgIdx + (isExec ? 1 : 0)];
 	}
 	// methods end
 }

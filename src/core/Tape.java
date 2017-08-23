@@ -30,6 +30,7 @@ package talide.core;
 /***********
    import   
 ***********/
+import java.util.Vector;
 
 
 /*****************
@@ -40,28 +41,42 @@ public class Tape implements Cloneable {
 	private TapeNode _read;
 	private MarginNode _mrgn_l;
 	private MarginNode _mrgn_r;
+	
+	private TapeConst[] _rawData;
+	private int _init_idx;
+	
+	private Vector<Iterator> _trackers;
 	// fields end
 
 
 	// constructors
-	public Tape(String str) {
-		this();
-	}
+	public Tape(String str) { this(new TapeConst[] { TapeConst.TC_0 }, 0); }
 	
 	public Tape() {
 		_mrgn_l = new MarginNode();
 		_mrgn_r = new MarginNode();
 		_mrgn_l._next = _mrgn_r;
 		_read = _mrgn_r._prev = _mrgn_l;
+		_trackers = new Vector<Iterator>();
+	}
+	
+	public Tape(TapeConst[] raw, int init) {
+		this();
+		
+		_rawData = raw.clone();
+		_init_idx = init;
+		
+		reset();
 	}
 	
 	public Tape(Tape t) {
 		this();
 		
+		_rawData = t._rawData.clone();
 		_mrgn_l._length = t._mrgn_l._length;
 		_mrgn_r._length = t._mrgn_r._length;
 		
-		TapeNode node = _mrgn_l;
+		TapeNode node = _read = _mrgn_l;
 		for (TapeNode it=t._mrgn_l._next; it!=t._mrgn_r; it=it._next) {
 			node = new TapeNode(it._value, node, _mrgn_r);
 			node._prev._next = _mrgn_r._prev = node;
@@ -98,7 +113,7 @@ public class Tape implements Cloneable {
 
 	private class MarginNode extends TapeNode {
 		// fields
-		int _length = 1;
+		int _length = 0;
 		// fields end
 
 
@@ -128,49 +143,99 @@ public class Tape implements Cloneable {
 		
 		
 		// methods
-		public TapeConst val() { return _focus._value; }
+		public TapeConst val() {
+            if (_focus == null) {
+                return TapeConst.TC_X;
+            } else {
+                return _focus._value;
+            }
+        }
 		
 		public void decrease() {
-			if (_depth!=0) --_depth;
-			if (_depth==0) {
-				_focus = _focus._prev;
-				if (_focus==_mrgn_l) _depth = -1;
-			}
+            if (_focus == null) return;
+			if (_depth != 0) --_depth;
+			if (_depth == 0) _focus = _focus._prev;
+			if (_focus == _mrgn_l) --_depth;
 		}
 		
 		public void increase() {
-			if (_depth!=0) ++_depth;
-			if (_depth==0) {
-				_focus = _focus._next;
-				if (_focus==_mrgn_r) _depth = 1;
-			}
+            if (_focus == null) return;
+			if (_depth != 0) ++_depth;
+			if (_depth == 0) _focus = _focus._next;
+			if (_focus == _mrgn_r) ++_depth;
 		}
+        
+        public void disable() {
+            _focus = null;
+        }
 		// methods end
 	}
 	// nested classes end
 
 
 	// methods
-	public Tape clone() { return new Tape(this); }
+	public Tape clone() { return this; }
+	
+	public void reset() {
+		if (_rawData==null) return;
+		if (_rawData.length<1) return;
+		if (_rawData.length<=_init_idx || _init_idx<0) _init_idx = 0;
+		
+		_mrgn_l._length = 0;
+		_mrgn_r._length = 0;
+		
+		int __length = _rawData.length;
+		TapeNode node = _mrgn_l;
+		for (int i=0; i<__length; ++i) {
+			node = new TapeNode(_rawData[i], node, _mrgn_r);
+			node._prev._next = _mrgn_r._prev = node;
+			if (i==_init_idx) _read = node;
+		}
+		trim();
+		
+		for (Iterator it : _trackers) it.disable();
+		_trackers.clear();
+	}
+	
+	private void trim() {
+		boolean meet;
+		TapeNode node;
+		
+		// left
+		meet = (_read==_mrgn_l);
+		node = _mrgn_l._next;
+		while (node!=_mrgn_r && node._value==TapeConst.TC_X) {
+			meet = meet || (node==_read);
+			if (meet) ++_mrgn_l._length;
+			node = node._next;
+		}
+		_mrgn_l._next = node;
+		node._prev = _mrgn_l;
+		if (meet) _read = _mrgn_l;
+		
+		// right
+		meet = (_read==_mrgn_r);
+		node = _mrgn_r._prev;
+		while (node!=_mrgn_l && node._value==TapeConst.TC_X) {
+			meet = meet || (node==_read);
+			if (meet) ++_mrgn_r._length;
+			node = node._prev;
+		}
+		_mrgn_r._prev = node;
+		node._next = _mrgn_r;
+		if (meet) _read = _mrgn_r;
+	}
 	
 	public void shiftLeft() {
-		if (_read==_mrgn_l) {
-			++_mrgn_l._length;
-		} else if (_read==_mrgn_r && _mrgn_r._length>1) {
-			--_mrgn_r._length;
-		} else {
-			_read = _read._prev;
-		}
+		if (_read==_mrgn_r) --_mrgn_r._length;
+		if (_mrgn_l._length==0) _read = _read._prev;
+		if (_read==_mrgn_l) ++_mrgn_l._length;
 	}
 	
 	public void shiftRight() {
-		if (_read==_mrgn_r) {
-			++_mrgn_r._length;
-		} else if (_read==_mrgn_l && _mrgn_l._length>1) {
-			--_mrgn_l._length;
-		} else {
-			_read = _read._next;
-		}
+		if (_read==_mrgn_l) --_mrgn_l._length;
+		if (_mrgn_l._length==0) _read = _read._next;
+		if (_read==_mrgn_r) ++_mrgn_r._length;
 	}
 	
 	public void override(TapeConst v) {
@@ -178,34 +243,22 @@ public class Tape implements Cloneable {
 		// otherwise, we insert enough X's to some end of the tape.
 		if (v==TapeConst.TC_X) {
 			_read._value = v;
-			if (_mrgn_l._next==_read) {
-				_read = _read._next;
-				while (_read!=_mrgn_r && _read._value==TapeConst.TC_X) {
-					_read = _read._next;
-				}
-				_mrgn_l._next = _read;
-				_read = _read._prev = _mrgn_l;
-			} else if (_mrgn_r._prev==_read) {
-				_read = _read._prev;
-				while (_read!=_mrgn_l && _read._value==TapeConst.TC_X) {
-					_read = _read._prev;
-				}
-				_mrgn_r._prev = _read;
-				_read = _read._next = _mrgn_r;
-			}
+			trim();
 		} else {
 			if (_read==_mrgn_l) {
 				for (int i=_mrgn_l._length; i>0; --i) {
-					_mrgn_l._next = new TapeNode(TapeConst.TC_X, _mrgn_l, _mrgn_l._next);
+					TapeNode node = new TapeNode(TapeConst.TC_X, _mrgn_l, _mrgn_l._next);
+					node._prev._next = node._next._prev = node;
 				}
 				_read = _mrgn_l._next;
-				_mrgn_l._length = 1;
+				_mrgn_l._length = 0;
 			} else if (_read==_mrgn_r) {
 				for (int i=_mrgn_r._length; i>0; --i) {
-					_mrgn_r._prev = new TapeNode(TapeConst.TC_X, _mrgn_r._prev, _mrgn_r);
+					TapeNode node = new TapeNode(TapeConst.TC_X, _mrgn_r._prev, _mrgn_r);
+					node._prev._next = node._next._prev = node;
 				}
 				_read = _mrgn_r._prev;
-				_mrgn_r._length = 1;
+				_mrgn_r._length = 0;
 			}
 			_read._value = v;
 		}
@@ -213,7 +266,10 @@ public class Tape implements Cloneable {
 	
 	public TapeConst read() { return _read._value; }
 	
-	public Iterator iterator() { return new Iterator(_read); }
+	public Iterator iterator() {
+		_trackers.add(new Iterator(_read));
+		return _trackers.lastElement();
+	}
 	
 	public void accept(ExecResult er) {
 		switch (er) {
