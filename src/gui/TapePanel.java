@@ -60,14 +60,19 @@ public class TapePanel extends JPanel {
 		TP_UNIT_HEIGHT  = _img[0].getHeight(null);
 		TP_HEIGHT = Math.max(TP_END_HEIGHT, TP_FRAME_HEIGHT);
 		
-		Dimension _preferredSize = new Dimension(
+		Dimension preferredSize = new Dimension(
 			2 * TP_END_WIDTH + 3 * TP_UNIT_WIDTH,
 			TP_HEIGHT
 		);
 		
+		Dimension minimumSize = new Dimension(
+			2 * TP_END_WIDTH + TP_FRAME_WIDTH,
+			TP_HEIGHT
+		);
+		
 		setOpaque(false);
-		setPreferredSize(_preferredSize);
-		setMinimumSize(_preferredSize);
+		setPreferredSize(preferredSize);
+		setMinimumSize(minimumSize);
 	}
 	// constructors end
 	
@@ -229,7 +234,7 @@ public class TapePanel extends JPanel {
 			case OVRD_1: return new OverridePeriod(TapeConst.TC_1);
 			case OVRD_X: return new OverridePeriod(TapeConst.TC_X);
 			case NIL: default:
-				return new MoviePeriod(){
+				return new MoviePeriod() {
 					public void broadcast(int tick) {}
 				};
 		}

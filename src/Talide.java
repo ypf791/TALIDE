@@ -38,7 +38,6 @@ public class Talide extends JFrame {
 	
 	public static Func _func_new;
 	public static Func _func_open;
-	public static Func _func_test;
 	// static fields end
 
 
@@ -55,6 +54,7 @@ public class Talide extends JFrame {
 		super("Talide");
 		
 		checkResources();
+		Slot.setImageReference(_img_slot, _img_slot_p);
 		
 		//Instantiate compenents
 		_prjPane = new ProjectPane();
@@ -102,7 +102,6 @@ public class Talide extends JFrame {
 	private static void instantiateFuncs() {
 		_func_new  = new FuncNew();
 		_func_open = new FuncOpen();
-		_func_test = new FuncTest();
 	}
 	
 	public static Talide getInstance() {
@@ -115,23 +114,25 @@ public class Talide extends JFrame {
 		
 		String fname_slot[] = new String[] {
 			"emp/emp",
-			"if/if_1_down",   "if/if_1_up",     "if/if_x_down",   "if/if_x_up",
-			"loop/loop_2",    "loop/loop_3",    "loop/loop_4",
+			"if/if_0_up",     "if/if_1_up",     "if/if_x_up",
+			"if/if_0_down",   "if/if_1_down",   "if/if_x_down",
+			"jump/jump_2",    "jump/jump_3",    "jump/jump_4",
 			"ovrd/ovrd_0",    "ovrd/ovrd_1",    "ovrd/ovrd_x",
 			"sft/sft_l",      "sft/sft_r"
 		};
 		String fname_slot_p[] = new String[] {
 			"if_p/if_0_down", "if_p/if_1_down", "if_p/if_x_down",
 			"if_p/if_0_up",   "if_p/if_1_up",   "if_p/if_x_up",
-			"loop_p/loop_2",  "loop_p/loop_3",  "loop_p/loop_4",
+			"jump_p/jump_2",  "jump_p/jump_3",  "jump_p/jump_4",
 			"ovrd_p/ovrd_0",  "ovrd_p/ovrd_1",
 			"sft_p/sft_l",    "sft_p/sft_r"
 		};
 
 		_img_cir = new Image[] {
-			tk.createImage(cl.getResource("img/cir/brg_col.gif")),
-			tk.createImage(cl.getResource("img/cir/brg_loop.gif")),
-			tk.createImage(cl.getResource("img/cir/brg_loop_end.gif")),
+			tk.createImage(cl.getResource("img/cir/brg_col.png")),
+			tk.createImage(cl.getResource("img/cir/brg_jump.png")),
+			tk.createImage(cl.getResource("img/cir/brg_jump_end_l.png")),
+			tk.createImage(cl.getResource("img/cir/brg_jump_end_r.png")),
 			tk.createImage(cl.getResource("img/cir/row.png")),
 			tk.createImage(cl.getResource("img/cir/row_end.png")),
 			tk.createImage(cl.getResource("img/cir/start.png")),
@@ -149,14 +150,16 @@ public class Talide extends JFrame {
 			tk.createImage(cl.getResource("img/tape/shade_r.png")),
 			tk.createImage(cl.getResource("img/tape/shade_b.png"))
 		};
-		_img_slot = new Image[26];
-		for (int i=0; i<13; ++i) {
+		int __length = fname_slot.length;
+		_img_slot = new Image[2 * __length];
+		for (int i=0; i<__length; ++i) {
 			String pre = "img/cir/slot/" + fname_slot[i];
 			_img_slot[2*i]   = tk.createImage(cl.getResource(pre + ".png"));
 			_img_slot[2*i+1] = tk.createImage(cl.getResource(pre + "_run.png"));
 		}
-		_img_slot_p = new Image[52];
-		for (int i=0; i<13; ++i) {
+		__length = fname_slot_p.length;
+		_img_slot_p = new Image[4 * __length];
+		for (int i=0; i<__length; ++i) {
 			String pre = "img/cir/slot/" + fname_slot_p[i];
 			_img_slot_p[4*i]   = tk.createImage(cl.getResource(pre + ".png"));
 			_img_slot_p[4*i+1] = tk.createImage(cl.getResource(pre + "_run.png"));
@@ -211,7 +214,7 @@ public class Talide extends JFrame {
 		Toolkit.getDefaultToolkit().setDynamicLayout(true);
 
 		try {
-			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+			UIManager.setLookAndFeel(new javax.swing.plaf.nimbus.NimbusLookAndFeel());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

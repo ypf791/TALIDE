@@ -26,7 +26,7 @@ import pedeslib.movie.*;
    public class   
 *****************/
 public class ExecFrame extends JFrame
-                    implements PeriodProvider {
+                    implements PeriodProvider, Executable {
 	// fields
 	private Tape    _tape;
 	private Circuit _circuit;
@@ -38,29 +38,37 @@ public class ExecFrame extends JFrame
 	
 	// constructors
 	public ExecFrame(Tape tape, Circuit circuit) {
-		//Instantiate compenents
+		// Instantiate compenents
 		_tape    = tape.clone();
 		_circuit = circuit.clone();
 		_tapePanel    = new TapePanel(_tape);
-		_circuitPanel = new CircuitPanel(_circuit);
-		_tapeMovie = new Movie(_tapePanel, this);
+		_circuitPanel = new CircuitPanel(_circuit, this);
+		_tapeMovie = new Movie(this, 8, this);
 		
-		//Adjust non-customized components
-		
-		//Declare container of the frame
+		// Declare container of the frame
 		Container cp = getContentPane();
 		
-		//Define Layout Manager
-		cp.setLayout(new BorderLayout());
+		// Define Layout Manager
+		GridBagLayout layout = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		cp.setLayout(layout);
+		// set constraints
+		c.weightx = 1;
+		c.weighty = 0;
+		c.insets = new Insets(5, 5, 5, 5);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		layout.setConstraints(_tapePanel, c);
+		cp.add(_tapePanel);
+		c.fill = GridBagConstraints.BOTH;
+		c.weighty = 1;
+		layout.setConstraints(_circuitPanel, c);
+		cp.add(_circuitPanel);
 		
-		//Add components
-		cp.add(_circuitPanel, BorderLayout.CENTER);
-		cp.add(_tapePanel, BorderLayout.NORTH);
-		
-		//Set the dimension of the frame
+		// Set the dimension of the frame
 		pack();
 		
-		//Center the frame
+		// Center the frame
 		Dimension scrnSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension thisSize = getSize();
 		if (thisSize.height > scrnSize.height) thisSize.height = scrnSize.height;
@@ -80,6 +88,16 @@ public class ExecFrame extends JFrame
 	// methods
 	public MoviePeriod nextMovie() {
 		return _tapePanel.getPeriod(_circuit.execOneSlot(_tape.read()));
+	}
+	
+	public void start() {
+		_tapeMovie.start();
+	}
+	
+	public void shutdown() {
+		_tapeMovie.terminate(true);
+		_tape.reset();
+		_circuit.reset();
 	}
 	// methods end
 }

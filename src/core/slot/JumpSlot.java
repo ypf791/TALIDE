@@ -27,22 +27,26 @@ public class JumpSlot extends Slot {
 	
 	// constructors
 	public JumpSlot(String str) throws CreateSlotException {
+		_code = "j:" + str;
 		try {
 			_distance = Integer.parseInt(str);
 		} catch (NumberFormatException ex) {
 			throw new CreateSlotException(1, str);
 		}
+		_NTEList.add(new NextToExec(0, _distance, ExecResult.NIL));
 	}
 	// constructors end
 
 
 	// methods
-	public String toCode() {
-		return "j:" + _distance;
-	}
-	
-	public NextToExec exec(TapeConst tc) {
-		return new NextToExec(0, _distance, ExecResult.NIL);
+	public java.awt.Image getImage(boolean isExec) {
+		int rtnIdx = 0;
+		switch (_distance) {
+			case -2: rtnIdx = 14; break;
+			case -3: rtnIdx = 16; break;
+			case -4: rtnIdx = 18; break;
+		}
+		return _img_slot[isExec ? rtnIdx+1 : rtnIdx];
 	}
 	// methods end
 }
