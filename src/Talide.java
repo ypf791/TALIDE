@@ -34,7 +34,7 @@ public class Talide extends JFrame {
 	public static Image _img_slot[];
 	public static Image _img_slot_p[];
 	public static Image _img_tape[];
-	public static Image _img_env[];
+	public static Image _img_cir[];
 	
 	public static Func _func_new;
 	public static Func _func_open;
@@ -53,6 +53,8 @@ public class Talide extends JFrame {
 	// constructors
 	public Talide() {
 		super("Talide");
+		
+		checkResources();
 		
 		//Instantiate compenents
 		_prjPane = new ProjectPane();
@@ -97,11 +99,20 @@ public class Talide extends JFrame {
 
 
 	// static methods
-	private static void loadResources() {
+	private static void instantiateFuncs() {
+		_func_new  = new FuncNew();
+		_func_open = new FuncOpen();
+		_func_test = new FuncTest();
+	}
+	
+	public static Talide getInstance() {
+		return _instance;
+	}
+	
+	public static void loadResources() {
 		ClassLoader cl = Talide.class.getClassLoader();
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		
-		//Loading images
 		String fname_slot[] = new String[] {
 			"emp/emp",
 			"if/if_1_down",   "if/if_1_up",     "if/if_x_down",   "if/if_x_up",
@@ -117,14 +128,15 @@ public class Talide extends JFrame {
 			"sft_p/sft_l",    "sft_p/sft_r"
 		};
 
-		_img_env = new Image[] {
-			tk.createImage(cl.getResource("img/env/brg_col.gif")),
-			tk.createImage(cl.getResource("img/env/brg_loop.gif")),
-			tk.createImage(cl.getResource("img/env/brg_loop_end.gif")),
-			tk.createImage(cl.getResource("img/env/row_end.png")),
-			tk.createImage(cl.getResource("img/env/start.png")),
-			tk.createImage(cl.getResource("img/env/start_press.png")),
-			tk.createImage(cl.getResource("img/env/start_run.png"))
+		_img_cir = new Image[] {
+			tk.createImage(cl.getResource("img/cir/brg_col.gif")),
+			tk.createImage(cl.getResource("img/cir/brg_loop.gif")),
+			tk.createImage(cl.getResource("img/cir/brg_loop_end.gif")),
+			tk.createImage(cl.getResource("img/cir/row.png")),
+			tk.createImage(cl.getResource("img/cir/row_end.png")),
+			tk.createImage(cl.getResource("img/cir/start.png")),
+			tk.createImage(cl.getResource("img/cir/start_press.png")),
+			tk.createImage(cl.getResource("img/cir/start_run.png"))
 		};
 		_img_tape = new Image[] {
 			tk.createImage(cl.getResource("img/tape/0.png")),
@@ -139,29 +151,18 @@ public class Talide extends JFrame {
 		};
 		_img_slot = new Image[26];
 		for (int i=0; i<13; ++i) {
-			String pre = "img/slot/" + fname_slot[i];
+			String pre = "img/cir/slot/" + fname_slot[i];
 			_img_slot[2*i]   = tk.createImage(cl.getResource(pre + ".png"));
 			_img_slot[2*i+1] = tk.createImage(cl.getResource(pre + "_run.png"));
 		}
 		_img_slot_p = new Image[52];
 		for (int i=0; i<13; ++i) {
-			String pre = "img/slot/" + fname_slot_p[i];
+			String pre = "img/cir/slot/" + fname_slot_p[i];
 			_img_slot_p[4*i]   = tk.createImage(cl.getResource(pre + ".png"));
 			_img_slot_p[4*i+1] = tk.createImage(cl.getResource(pre + "_run.png"));
 			_img_slot_p[4*i+2] = tk.createImage(cl.getResource(pre + "_set.png"));
 			_img_slot_p[4*i+3] = tk.createImage(cl.getResource(pre + "_press.png"));
 		}
-		//End loading images
-	}
-	
-	private static void instantiateFuncs() {
-		_func_new  = new FuncNew();
-		_func_open = new FuncOpen();
-		_func_test = new FuncTest();
-	}
-	
-	public static JFrame getInstance() {
-		return _instance;
 	}
 	// static methods end
 
@@ -169,6 +170,36 @@ public class Talide extends JFrame {
 	// methods
 	public void showExecFrame(Tape tape, Circuit circuit) {
 		new ExecFrame(tape, circuit);
+	}
+	
+	private void checkResources() {
+		MediaTracker mt = new MediaTracker(this);
+		
+		int idx = 0;
+		try {
+			int __length = _img_tape.length;
+			for (int i=0; i<__length; ++idx) {
+				mt.addImage(_img_tape[i++], idx);
+				mt.waitForID(idx);
+			}
+			__length = _img_cir.length;
+			for (int i=0; i<__length; ++idx) {
+				mt.addImage(_img_cir[i++], idx);
+				mt.waitForID(idx);
+			}
+			__length = _img_slot.length;
+			for (int i=0; i<__length; ++idx) {
+				mt.addImage(_img_slot[i++], idx);
+				mt.waitForID(idx);
+			}
+			__length = _img_slot_p.length;
+			for (int i=0; i<__length; ++idx) {
+				mt.addImage(_img_slot_p[i++], idx);
+				mt.waitForID(idx);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	// methods end
 

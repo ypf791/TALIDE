@@ -19,25 +19,17 @@ package talide.core;
 /*****************
    public class   
 *****************/
-public final class FailToCreateSlotException extends Exception {
+public final class CreateSlotException extends Exception {
 	// fields
-	private int _idx;
-	private String _arg;
+	public int _idx;
+	public String _arg;
 	// fields end
 	
 	
 	// constructors
-	public FailToCreateSlotException(int idx, String arg) {
+	public CreateSlotException(int idx, String arg) {
 		_idx = idx;
 		_arg = arg;
 	}
 	// constructors end
-
-
-	// methods
-	public void printMyMessage() {
-		System.err.println("[ ERR ] " + getStackTrace()[0].toString());
-		System.err.println("[ MSG ] Unrecognized argument $" + _idx + ": " + _arg);
-	}
-	// methods end
 }
