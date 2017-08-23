@@ -43,8 +43,6 @@ public class MyMenuBar extends JMenuBar {
 		jmEdit.add(new JMenuItem("Paste"));
 		//about
 		JMenu jmAbout = new JMenu("About");
-		jmAbout.add(new JMenuItem(Talide._func_test));
-		jmAbout.addSeparator();
 		jmAbout.add(new JMenuItem("About Talide"));
 		
 		add(jmFile);

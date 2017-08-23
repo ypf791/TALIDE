@@ -26,12 +26,12 @@ public class OverrideSlot extends Slot {
 	
 	
 	// constructors
-	public OverrideSlot(String str) throws FailToCreateSlotException {
+	public OverrideSlot(String str) throws CreateSlotException {
 		switch (str) {
 			case "0": _toOverride = TapeConst.TC_0; break;
 			case "1": _toOverride = TapeConst.TC_1; break;
 			case "x": _toOverride = TapeConst.TC_X; break;
-			default: throw new FailToCreateSlotException(1, str);
+			default: throw new CreateSlotException(1, str);
 		}
 	}
 	// constructors end
@@ -49,13 +49,13 @@ public class OverrideSlot extends Slot {
 	}
 	
 	public NextToExec exec(TapeConst tc) {
-		NextToExec rtn = new NextToExec(0, 1, ExecResult.NIL);
+		ExecResult er = ExecResult.NIL;
 		switch (_toOverride) {
-			case TC_0: rtn._result = ExecResult.OVRD_0; break;
-			case TC_1: rtn._result = ExecResult.OVRD_1; break;
-			case TC_X: rtn._result = ExecResult.OVRD_X; break;
+			case TC_0: er = ExecResult.OVRD_0; break;
+			case TC_1: er = ExecResult.OVRD_1; break;
+			case TC_X: er = ExecResult.OVRD_X; break;
 		}
-		return rtn;
+		return new NextToExec(0, 1, er);
 	}
 	// methods end
 }

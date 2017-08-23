@@ -70,6 +70,7 @@ public class ExecFrame extends JFrame
 			(scrnSize.height - thisSize.height) / 2
 		);
 		
+		cp.setBackground(Color.WHITE);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
